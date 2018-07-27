@@ -16,6 +16,12 @@ class Layer {
     }
   }
   
+  Layer(float[][] w, float[] b){
+    weights = w;
+    biases = b;
+    layersize = biases.length;
+  }
+  
   float[] calculate(float[] inputs){
     float[] output = new float[layersize];
     for(int i = 0; i < layersize; i++){
