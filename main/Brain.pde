@@ -11,13 +11,13 @@ class Brain {
     }
   }
   
-  Layer[] calculate(float[] input, int ans){
+  float[][] calculate(float[] input){
     float[][] currnodes = new float[BRAIN_DEPTH+1][0];
     currnodes[0] = input;
     for(int i = 0; i < BRAIN_DEPTH; i++){
       currnodes[i+1] = layers[i].calculate(currnodes[i]);
     }
-    return backprop(currnodes, ans);
+    return currnodes;
   }
   
   Layer[] backprop(float[][] nodes, int ans){
@@ -29,8 +29,8 @@ class Brain {
     for(int i = BRAIN_DEPTH-1; i >= 0; i--){
       float newlastnodes = 0;
       //backprop through each weight
-      float[][] nweights = new float[layers[i].layersize][layers[i-1].layersize];
-      float[] nbiases = new float[layers[i].layersize];
+      float[][] nweights = new float[nodes[i+1].length][nodes[i].length];
+      float[] nbiases = new float[nodes[i+1].length];
       for(int j = 0; j < layers[i].layersize; j++){
         float term = nodes[i+1][j]*(1-nodes[i+1][j])*lastnodes;
         nbiases[j] = term;

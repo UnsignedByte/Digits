@@ -1,6 +1,6 @@
 
-final int NUM_LAYERS = 2;
 final int[] LAYER_SIZES = {1, 2, 2};
+final int NUM_LAYERS = LAYER_SIZES.length;
 
 final int BUTTON_TOP_MARGIN = 75;
 final int BUTTON_LEFT_MARGIN = 50;
@@ -32,27 +32,41 @@ void setup(){
 void draw() {
   b.draw();
   if (Training){
-    pair in = genInput();
-    Layer[] sum = brain.calculate(in.arr, in.ans);
+    Layer[] sum = calculate();
     for(int i = 1; i < BATCH_SIZE; i++){
-      in = genInput();
-      Layer[] nsum = brain.calculate(in.arr, in.ans);
+      Layer[] nsum = calculate();
+      Action act = new Action(){
+        public float act(float a, float b){
+          return a+b;
+        }
+      };
+      sum = updateLayers(sum, nsum, act);
     }
-  }
-}
-
-pair genInput(){
-  float[] out = {random(1)};
-  int ans = round(out[0]);
-  return new pair(out, ans);
-}
-
-class pair {
-  float[] arr;
-  int ans;
-  pair(float[] a, int b){
-    arr = a;
-    ans = b;
+    
+    final float f = sum.length;
+    Action act = new Action(){
+      public float act(float a, float b){
+        return a+b/f;
+      }
+    };
+    brain.layers = updateLayers(brain.layers, sum, act);
+    for(int l = 0; l < sum.length; l++){
+      for(int j = 0; j < sum[l].layersize; j++){
+        sum[l].biases[j]/=sum.length;
+        for(int k = 0; k < sum[l].weights[j].length; k++){
+          sum[l].weights[j][k] /= sum.length;
+        }
+      }
+    }
+    
+    for(int l = 0; l < sum.length; l++){
+      for(int j = 0; j < sum[l].layersize; j++){
+        brain.layers[l].biases[j] += sum[l].biases[j];
+        for(int k = 0; k < sum[l].weights[j].length; k++){
+          brain.layers[l].weights[j][k] += sum[l].weights[j][k];
+        }
+      }
+    }
   }
 }
 
