@@ -1,6 +1,6 @@
 from random import shuffle
 import numpy as np
-from MathUtils import *
+from Utils.MathUtils import *
 
 class Brain:
     def __init__(self, layer_sizes):
@@ -10,7 +10,7 @@ class Brain:
     def calculate(self, x):
         layers = [x]
         for x, y in zip(self.weights, self.biases):
-            layers.append(sigmoid(np.dot(x, layers[-1])+y))
+            layers.append(sigmoid((x @ layers[-1])+y))
         return layers
     def result(self, x):
         return self.calculate(x)[-1];
@@ -27,13 +27,13 @@ class Brain:
         curr_delta = 2*(layers[-1]-y)
 
         delta_biases[-1] = curr_delta
-        delta_weights[-1] = np.dot(curr_delta, layers[-2].transpose())
+        delta_weights[-1] = curr_delta @ layers[-2].transpose()
 
         for i in range(2, len(self.shape)):
             raw = sigmoid_derivative(layers[-i])
-            curr_delta = np.dot(self.weights[-l+1].transpose(), curr_delta) * raw
+            curr_delta = (self.weights[-l+1].transpose() @ curr_delta) * raw
             delta_biases[-l] = curr_delta
-            delta_weights[-l] = np.dot(curr_delta, layers[-l-1].transpose())
+            delta_weights[-l] = curr_delta @ layers[-l-1].transpose()
         return (delta_biases, delta_weights)
 
     def train_batch(self, batch, rate):
