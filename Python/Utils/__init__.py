@@ -1,1 +1,1 @@
-__all__ = ["Brain", "MathUtils"]
+__all__ = ["Brain", "MathUtils", "MNISTParser", "FileUtils"]
