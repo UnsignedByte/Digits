@@ -59,4 +59,4 @@ class Brain:
             for batch in batches:
                 loss = self.train_batch(batch, rate)
                 print("\tBatch complete. Loss: {0}".format(loss))
-            print("Epoch {0} complete.")
+            print("Epoch {0} complete.".format(i+1))

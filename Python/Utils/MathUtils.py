@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def sigmoid(x):
     return .5 * (1 + np.tanh(.5 * x))
     # try:
